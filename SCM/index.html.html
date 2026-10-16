@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BagHaus — Bags &amp; Accessories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#" class="logo">Bag<span>Haus</span></a>
+      <nav class="nav">
+        <a href="#products">Shop</a>
+        <a href="#products">Bags</a>
+        <a href="#products">Accessories</a>
+        <a href="#products">Sale</a>
+      </nav>
+      <button class="cart-btn" id="cartBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        Cart
+        <span class="badge" id="badge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="pill">New Collection 2025</span>
+      <h1>Carry it your&nbsp;way.</h1>
+      <p>Everyday bags, accessories and footwear — thoughtfully designed, endlessly useful, all in one place.</p>
+      <a href="#products" class="btn">Shop the collection</a>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="section" id="products">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Our Products</h2>
+          <p>Free shipping on orders over $75</p>
+        </div>
+        <div class="filters" id="filters">
+          <button class="filter active" data-cat="all">All</button>
+          <button class="filter" data-cat="Bags">Bags</button>
+          <button class="filter" data-cat="Accessories">Accessories</button>
+          <button class="filter" data-cat="Footwear">Footwear</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- Cart -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Shopping cart">
+    <div class="drawer-head">
+      <h3>Your Cart</h3>
+      <button class="close-btn" id="closeBtn" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="drawer-body" id="cartBody"></div>
+    <div class="drawer-foot" id="cartFoot">
+      <div class="total-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+      <button class="checkout" id="checkoutBtn">Checkout</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="footer">
+    <div class="container">© 2025 <strong>BagHaus</strong> — Bags, accessories &amp; more. All rights reserved.</div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
