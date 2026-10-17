@@ -19,16 +19,16 @@ function iconSVG(name) {
 
 /* ---------------- Data ---------------- */
 const products = [
-  { id: 1,  name: 'Classic Canvas Tote',  price: 49.99,  cat: 'Bags',        icon: 'tote',      rating: 4.8, reviews: 128 },
-  { id: 2,  name: 'Urban Backpack',       price: 79.99,  cat: 'Bags',        icon: 'backpack',  rating: 4.9, reviews: 214 },
-  { id: 3,  name: 'Mini Crossbody',       price: 39.99,  cat: 'Bags',        icon: 'crossbody', rating: 4.6, reviews: 86 },
-  { id: 4,  name: 'Leather Handbag',      price: 129.00, cat: 'Bags',        icon: 'handbag',   rating: 4.9, reviews: 173 },
-  { id: 5,  name: 'Weekend Duffel',       price: 89.50,  cat: 'Bags',        icon: 'duffel',    rating: 4.7, reviews: 64 },
-  { id: 6,  name: 'Minimal Watch',        price: 99.00,  cat: 'Accessories', icon: 'watch',     rating: 4.8, reviews: 142 },
-  { id: 7,  name: 'Aviator Shades',       price: 59.00,  cat: 'Accessories', icon: 'shades',    rating: 4.5, reviews: 98 },
-  { id: 8,  name: 'Leather Wallet',       price: 45.00,  cat: 'Accessories', icon: 'wallet',    rating: 4.7, reviews: 210 },
-  { id: 9,  name: 'Everyday Cap',         price: 25.00,  cat: 'Accessories', icon: 'cap',       rating: 4.4, reviews: 57 },
-  { id: 10, name: 'Retro Sneakers',       price: 110.00, cat: 'Footwear',    icon: 'shoe',      rating: 4.8, reviews: 301 }
+  { id: 1,  name: 'Classic Canvas Tote',  price: 49.99,  cat: 'Bags',        icon: 'tote',      img: 'images/tote.jpg',     rating: 4.8, reviews: 128 },
+  { id: 2,  name: 'Urban Backpack',       price: 79.99,  cat: 'Bags',        icon: 'backpack',  img: 'images/backpack.jpg', rating: 4.9, reviews: 214 },
+  { id: 3,  name: 'Mini Crossbody',       price: 39.99,  cat: 'Bags',        icon: 'crossbody', img: 'images/crossbody.jpg',rating: 4.6, reviews: 86 },
+  { id: 4,  name: 'Leather Handbag',      price: 129.00, cat: 'Bags',        icon: 'handbag',   img: 'images/handbag.jpg',  rating: 4.9, reviews: 173 },
+  { id: 5,  name: 'Weekend Duffel',       price: 89.50,  cat: 'Bags',        icon: 'duffel',    img: 'images/duffel.jpg',   rating: 4.7, reviews: 64 },
+  { id: 6,  name: 'Minimal Watch',        price: 99.00,  cat: 'Accessories', icon: 'watch',     img: 'images/watch.jpg',    rating: 4.8, reviews: 142 },
+  { id: 7,  name: 'Aviator Shades',       price: 59.00,  cat: 'Accessories', icon: 'shades',    img: 'images/shades.jpg',   rating: 4.5, reviews: 98 },
+  { id: 8,  name: 'Leather Wallet',       price: 45.00,  cat: 'Accessories', icon: 'wallet',    img: 'images/wallet.jpg',   rating: 4.7, reviews: 210 },
+  { id: 9,  name: 'Everyday Cap',         price: 25.00,  cat: 'Accessories', icon: 'cap',       img: 'images/cap.jpg',      rating: 4.4, reviews: 57 },
+  { id: 10, name: 'Retro Sneakers',       price: 110.00, cat: 'Footwear',    icon: 'shoe',      img: 'images/sneakers.jpg', rating: 4.8, reviews: 301 }
 ];
 
 /* ---------------- Elements ---------------- */
@@ -57,6 +57,7 @@ function renderProducts(cat = 'all') {
       <div class="card-media">
         <span class="tag">${p.cat}</span>
         ${iconSVG(p.icon)}
+        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.remove()">
       </div>
       <div class="card-body">
         <h3>${p.name}</h3>
@@ -113,7 +114,10 @@ function renderCart() {
     const p = findProduct(item.id);
     return `
       <div class="cart-item">
-        <div class="cart-thumb">${iconSVG(p.icon)}</div>
+        <div class="cart-thumb">
+          ${iconSVG(p.icon)}
+          <img src="${p.img}" alt="${p.name}" onerror="this.remove()">
+        </div>
         <div class="cart-info">
           <h4>${p.name}</h4>
           <div class="p">${money(p.price)}</div>
