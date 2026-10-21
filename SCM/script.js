@@ -42,6 +42,11 @@ const cartFoot   = document.getElementById('cartFoot');
 const subtotalEl = document.getElementById('subtotal');
 const toastEl    = document.getElementById('toast');
 
+const searchInput = document.getElementById('searchInput');
+const searchBtn   = document.getElementById('searchBtn');
+const searchClear = document.getElementById('searchClear');
+
+let searchTerm = '';
 let cart = [];
 let toastTimer;
 
@@ -49,8 +54,20 @@ const money = n => '$' + n.toFixed(2);
 const findProduct = id => products.find(p => p.id === Number(id));
 
 /* ---------------- Render products ---------------- */
+
 function renderProducts(cat = 'all') {
-  const list = cat === 'all' ? products : products.filter(p => p.cat === cat);
+  const query = searchTerm.trim().toLowerCase();
+
+  const list = products.filter(p => {
+    const matchesCategory =
+      cat === 'all' || p.cat === cat;
+
+    const matchesSearch =
+      p.name.toLowerCase().includes(query) ||
+      p.cat.toLowerCase().includes(query);
+
+    return matchesCategory && matchesSearch;
+  });
 
   grid.innerHTML = list.map((p, i) => `
     <article class="card" style="animation-delay:${i * 45}ms">
@@ -70,6 +87,7 @@ function renderProducts(cat = 'all') {
     </article>
   `).join('');
 }
+
 
 /* ---------------- Cart logic ---------------- */
 function addToCart(id) {
@@ -161,6 +179,50 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
 }
+
+/* ---------------- Search ---------------- */
+function updateSearchUI() {
+  searchClear.hidden = searchInput.value.length === 0;
+}
+
+function runSearch() {
+  searchTerm = searchInput.value;
+  renderProducts();
+  updateSearchUI();
+  if (searchTerm.trim()) {
+    document.getElementById('products')
+      .scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+searchBtn.addEventListener('click', runSearch);
+
+searchInput.addEventListener('input', () => {
+  searchTerm = searchInput.value;
+  renderProducts();
+  updateSearchUI();
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    runSearch();
+  }
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    searchTerm = '';
+    renderProducts();
+    updateSearchUI();
+  }
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchTerm = '';
+  renderProducts();
+  updateSearchUI();
+  searchInput.focus();
+});
 
 /* ---------------- Events ---------------- */
 grid.addEventListener('click', e => {
