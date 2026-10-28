@@ -472,3 +472,175 @@ body {
   .card-foot { flex-direction: column; align-items: flex-start; gap: 8px; }
   .add-btn { width: 100%; }
 }
+
+/* ---------- Light and Dark Mode ---------- */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--gold);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* Smooth theme changes */
+body,
+.header,
+.search,
+.filter,
+.card,
+.drawer,
+.drawer-foot,
+.close-btn,
+.qty button,
+.footer {
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+}
+
+/* Dark theme colors */
+body[data-theme="dark"] {
+  --ink: #f5f0e6;
+  --ink-2: #ffffff;
+  --gold: #e1bd49;
+  --gold-dark: #e1bd49;
+  --soft: #39352c;
+  --tint: #242424;
+  --text: #f3f0e8;
+  --muted: #b9b2a5;
+  --line: #45413a;
+
+  background: #181818;
+  color: var(--text);
+}
+
+/* Header and navigation */
+body[data-theme="dark"] .header {
+  background: rgba(24, 24, 24, 0.94);
+}
+
+body[data-theme="dark"] .logo {
+  color: var(--text);
+}
+
+body[data-theme="dark"] .nav a {
+  color: var(--muted);
+}
+
+body[data-theme="dark"] .nav a:hover {
+  color: var(--gold);
+}
+
+/* Theme toggle */
+body[data-theme="dark"] .theme-toggle {
+  background: #302d27;
+  color: #ffffff;
+  border-color: #5b5548;
+}
+
+/* Search */
+body[data-theme="dark"] .search {
+  background: #242424;
+}
+
+body[data-theme="dark"] .search:focus-within {
+  background: #2b2b2b;
+}
+
+body[data-theme="dark"] .search-input {
+  color: var(--text);
+}
+
+/* Product filters and cards */
+body[data-theme="dark"] .filter {
+  background: #242424;
+  color: var(--text);
+}
+
+body[data-theme="dark"] .filter.active {
+  background: #e1bd49;
+  border-color: #e1bd49;
+  color: #181818;
+}
+
+body[data-theme="dark"] .card {
+  background: #242424;
+}
+
+body[data-theme="dark"] .card-media {
+  background: linear-gradient(150deg, #38342c, #292720);
+  color: var(--gold);
+}
+
+body[data-theme="dark"] .tag {
+  background: #39352c;
+  color: #ffffff;
+}
+
+/* Shopping cart */
+body[data-theme="dark"] .drawer {
+  background: #202020;
+  color: var(--text);
+}
+
+body[data-theme="dark"] .qty button {
+  background: #302d27;
+  color: #ffffff;
+}
+
+body[data-theme="dark"] .close-btn {
+  background: #302d27;
+  color: #ffffff;
+}
+
+body[data-theme="dark"] .drawer-foot {
+  background: #242424;
+}
+
+body[data-theme="dark"] .checkout,
+body[data-theme="dark"] .cart-btn,
+body[data-theme="dark"] .search-btn {
+  background: #e1bd49;
+  color: #181818;
+}
+
+body[data-theme="dark"] .checkout:hover,
+body[data-theme="dark"] .cart-btn:hover,
+body[data-theme="dark"] .search-btn:hover {
+  background: #f0cf61;
+}
+
+/* Footer */
+body[data-theme="dark"] .footer {
+  background: #202020;
+}
+
+/* Keep the toggle compact on smaller screens */
+@media (max-width: 420px) {
+  .theme-toggle {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+
+  .header-inner {
+    gap: 8px;
+  }
+}

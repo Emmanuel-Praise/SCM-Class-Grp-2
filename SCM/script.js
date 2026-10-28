@@ -270,6 +270,46 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
 });
 
 /* ---------------- Init ---------------- */
+/*renderProducts();
+renderCart();
+updateBadge();*/
+
+/* ---------------- Light and Dark Mode ---------------- */
+
+const themeToggle = document.getElementById('themeToggle');
+
+function setTheme(theme) {
+  const isDark = theme === 'dark';
+
+  document.body.dataset.theme = isDark ? 'dark' : 'light';
+
+  themeToggle.querySelector('span').textContent =
+    isDark ? '☀️' : '🌙';
+
+  themeToggle.querySelector('.theme-label').textContent =
+    isDark ? 'Light' : 'Dark';
+
+  themeToggle.setAttribute(
+    'aria-label',
+    isDark ? 'Switch to light mode' : 'Switch to dark mode'
+  );
+
+  localStorage.setItem('baghaus-theme', theme);
+}
+
+themeToggle.addEventListener('click', () => {
+  const currentTheme = document.body.dataset.theme || 'light';
+
+  setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+});
+
+/* ---------------- Init ---------------- */
+
+// Restore the saved theme, or use light mode by default.
+const savedTheme = localStorage.getItem('baghaus-theme');
+
+setTheme(savedTheme === 'dark' ? 'dark' : 'light');
+
 renderProducts();
 renderCart();
 updateBadge();
