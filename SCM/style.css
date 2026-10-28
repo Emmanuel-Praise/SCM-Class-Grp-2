@@ -60,6 +60,43 @@ body {
 .cart-btn:active { transform: scale(.96); }
 .cart-btn svg { width: 17px; height: 17px; }
 
+.benefits {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 60px 20px;
+  background: #f8f6f0;
+  flex-wrap: wrap;
+}
+
+.benefit-card {
+  background: white;
+  padding: 30px;
+  width: 280px;
+  text-align: center;
+  border-radius: 14px;
+  border: 1px solid #eee5d5;
+  transition: transform 0.3s;
+}
+
+.benefit-card:hover {
+  transform: translateY(-8px);
+}
+
+.benefit-card span {
+  font-size: 35px;
+}
+
+.benefit-card h3 {
+  margin: 15px 0 10px;
+  color: #1a1712;
+}
+
+.benefit-card p {
+  color: #777;
+  font-size: 14px;
+}
+
 .badge {
   position: absolute; top: -6px; right: -6px;
   background: #fff; color: var(--ink);
