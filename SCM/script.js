@@ -17,6 +17,9 @@ function iconSVG(name) {
     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ICONS.tote}</svg>`;
 }
 
+const CART_KEY = 'baghaus-cart';
+const WISHLIST_KEY = 'baghaus-wishlist';
+
 /* ---------------- Data ---------------- */
 const products = [
   { id: 1,  name: 'Classic Canvas Tote',  price: 49.99,  cat: 'Bags',        icon: 'tote',      img: 'images/tote.jpg',     rating: 4.8, reviews: 128 },
@@ -41,17 +44,46 @@ const cartBody   = document.getElementById('cartBody');
 const cartFoot   = document.getElementById('cartFoot');
 const subtotalEl = document.getElementById('subtotal');
 const toastEl    = document.getElementById('toast');
+const wishlistStrip = document.getElementById('wishlistStrip');
+const wishlistBadge = document.getElementById('wishlistBadge');
+const wishlistToggle = document.getElementById('wishlistToggle');
 
 const searchInput = document.getElementById('searchInput');
 const searchBtn   = document.getElementById('searchBtn');
 const searchClear = document.getElementById('searchClear');
 
 let searchTerm = '';
-let cart = [];
+let cart = loadFromStorage(CART_KEY, []);
+let wishlist = loadFromStorage(WISHLIST_KEY, []);
 let toastTimer;
 
 const money = n => '$' + n.toFixed(2);
 const findProduct = id => products.find(p => p.id === Number(id));
+
+function loadFromStorage(key, fallback) {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function persistCart() {
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  } catch (error) {
+    console.warn('Cart persistence unavailable:', error);
+  }
+}
+
+function persistWishlist() {
+  try {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
+  } catch (error) {
+    console.warn('Wishlist persistence unavailable:', error);
+  }
+}
 
 /* ---------------- Render products ---------------- */
 
@@ -69,25 +101,66 @@ function renderProducts(cat = 'all') {
     return matchesCategory && matchesSearch;
   });
 
-  grid.innerHTML = list.map((p, i) => `
-    <article class="card" style="animation-delay:${i * 45}ms">
-      <div class="card-media">
-        <span class="tag">${p.cat}</span>
-        ${iconSVG(p.icon)}
-        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.remove()">
-      </div>
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        <div class="rating">★ ${p.rating} <span>· ${p.reviews} reviews</span></div>
-        <div class="card-foot">
-          <span class="price">${money(p.price)}</span>
-          <button class="add-btn" data-id="${p.id}">Add to cart</button>
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="no-results"><strong>No products found.</strong> Try another search or category.</div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map((p, i) => {
+    const isWishlisted = wishlist.includes(p.id);
+    return `
+      <article class="card" style="animation-delay:${i * 45}ms">
+        <div class="card-media">
+          <span class="tag">${p.cat}</span>
+          ${iconSVG(p.icon)}
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.remove()">
         </div>
-      </div>
-    </article>
-  `).join('');
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <div class="rating">★ ${p.rating} <span>· ${p.reviews} reviews</span></div>
+          <div class="card-foot">
+            <span class="price">${money(p.price)}</span>
+            <div class="card-actions">
+              <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-wishlist-id="${p.id}" aria-label="${isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}">${isWishlisted ? '♥' : '♡'}</button>
+              <button class="add-btn" data-id="${p.id}">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
+function renderWishlist() {
+  if (!wishlist.length) {
+    wishlistStrip.innerHTML = '<div class="wishlist-empty">No saved items yet. Tap the heart on any product to save it.</div>';
+    wishlistBadge.textContent = 0;
+    return;
+  }
+
+  const savedItems = wishlist.map(id => findProduct(id)).filter(Boolean);
+  wishlistStrip.innerHTML = savedItems.map(product => `
+    <span class="wishlist-item"><span class="mini-heart">♥</span>${product.name}</span>
+  `).join('');
+  wishlistBadge.textContent = savedItems.length;
+}
+
+function toggleWishlist(id) {
+  const productId = Number(id);
+  const isSaved = wishlist.includes(productId);
+
+  if (isSaved) {
+    wishlist = wishlist.filter(item => item !== productId);
+    showToast(`${findProduct(productId).name} removed from wishlist`);
+  } else {
+    wishlist.push(productId);
+    showToast(`${findProduct(productId).name} saved to wishlist`);
+  }
+
+  persistWishlist();
+  renderProducts();
+  renderWishlist();
+}
 
 /* ---------------- Cart logic ---------------- */
 function addToCart(id) {
@@ -95,6 +168,7 @@ function addToCart(id) {
   if (item) item.qty++;
   else cart.push({ id, qty: 1 });
 
+  persistCart();
   renderCart();
   updateBadge();
   showToast(`${findProduct(id).name} added to cart`);
@@ -105,12 +179,14 @@ function changeQty(id, delta) {
   if (!item) return;
   item.qty += delta;
   if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  persistCart();
   renderCart();
   updateBadge();
 }
 
 function removeItem(id) {
   cart = cart.filter(i => i.id !== id);
+  persistCart();
   renderCart();
   updateBadge();
 }
@@ -226,6 +302,12 @@ searchClear.addEventListener('click', () => {
 
 /* ---------------- Events ---------------- */
 grid.addEventListener('click', e => {
+  const wishlistBtn = e.target.closest('.wishlist-btn');
+  if (wishlistBtn) {
+    toggleWishlist(Number(wishlistBtn.dataset.wishlistId));
+    return;
+  }
+
   const btn = e.target.closest('.add-btn');
   if (!btn) return;
 
@@ -264,6 +346,10 @@ document.getElementById('closeBtn').addEventListener('click', closeCart);
 overlay.addEventListener('click', closeCart);
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
 
+wishlistToggle.addEventListener('click', () => {
+  document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
 document.getElementById('checkoutBtn').addEventListener('click', () => {
   if (cart.length === 0) return;
   showToast('Checkout is a demo — thanks for trying! 🎉');
@@ -272,4 +358,8 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
 /* ---------------- Init ---------------- */
 renderProducts();
 renderCart();
+renderWishlist();
 updateBadge();
+updateSearchUI();
+
+
